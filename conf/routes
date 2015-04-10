@@ -4,6 +4,9 @@
 
 # Home page
 GET        /                             controllers.Application.index
+GET        /login/github                 controllers.Login.github
+GET        /login/github/callback        controllers.Login.githubCallback
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET        /assets/*file        controllers.Assets.at(path="/public", file)

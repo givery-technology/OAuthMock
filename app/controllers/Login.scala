@@ -5,8 +5,8 @@ import play.api.mvc._
 import services.GitHub.GitHubOAuthProvider
 
 object Login extends Controller {
-  val clientId: String = System.getenv("GITHUB_CLIENT_ID")
-  val clientSecret: String = System.getenv("GITHUB_CLIENT_SECRET")
+  val clientId: String = sys.env.get("GITHUB_CLIENT_ID").getOrElse("")
+  val clientSecret: String = sys.env.get("GITHUB_CLIENT_SECRET").getOrElse("")
 
   def github = Action { request =>
     val protocol = if (request.secure) "https" else "http"

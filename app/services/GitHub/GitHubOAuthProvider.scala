@@ -1,7 +1,11 @@
 package services.GitHub
 
+import java.util.concurrent.Future
+
 import com.ning.http.client.{Response, AsyncHttpClient, RequestBuilder}
 import com.ning.http.util.UTF8UrlEncoder
+import org.json4s._
+import org.json4s.jackson.JsonMethods._
 
 object GitHubOAuthProvider {
   val accessRequestUri = "https://github.com/login/oauth/authorize"
@@ -21,7 +25,9 @@ object GitHubOAuthProvider {
       .setFollowRedirects(true)
       .setUrl(tokenRequestUri)
     parameters.foreach { case (k, v) => builder.addFormParam(k, v) }
-    val response: Response = client.prepareRequest(builder.build).execute.get
-    response.getResponseBody("utf-8")
+    val response: Future[Response] = client.prepareRequest(builder.build).execute
+    val json = parse(response.get.getResponseBody("utf-8"))
+    implicit val format: Formats = DefaultFormats
+    (json \ "access_token").extractOrElse("None")
   }
 }

@@ -4,12 +4,12 @@ name := """OAuthMock"""
 
 version := "1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
-
 scalaVersion := "2.11.1"
+
+lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 libraryDependencies ++= Seq(
   cache,
-  "com.ning" % "async-http-client" % "1.9.18",
-  "com.fasterxml.jackson.core" % "jackson-core" % "2.5.2"
+  "com.ning" % "async-http-client" % "1.9.+",
+  "org.json4s" %% "json4s-jackson" % "3.2.+"
 )

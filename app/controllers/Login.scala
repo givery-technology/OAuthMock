@@ -27,9 +27,9 @@ object Login extends Controller {
       "code" -> code,
       "redirect_uri" -> "%s://%s/login/github/callback".format(protocol, request.host)
     )
-    //Ok(views.html.index(GitHubOAuthProvider.requestToken(params)))
     val token = GitHubOAuthProvider.requestToken(params)
-    Redirect("%s://%s/login/github/confirm".format(protocol, request.host))
+    Ok(views.html.index(token))
+    //Redirect("%s://%s/login/github/confirm".format(protocol, request.host))
   }
 
   def githubConfirm = Action {

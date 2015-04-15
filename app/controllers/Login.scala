@@ -2,34 +2,29 @@ package controllers
 
 import play.api._
 import play.api.mvc._
-import services.GitHub.GitHubOAuthProvider
+import services.github.GitHubOAuthProvider
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object Login extends Controller {
-  val clientId: String = sys.env.get("GITHUB_CLIENT_ID").getOrElse("")
-  val clientSecret: String = sys.env.get("GITHUB_CLIENT_SECRET").getOrElse("")
+  val clientId: String = sys.env("GITHUB_CLIENT_ID")
+  val clientSecret: String = sys.env("GITHUB_CLIENT_SECRET")
 
-  def github = Action { request =>
+  private def callbackUrl[T](implicit request: Request[T]) = {
     val protocol = if (request.secure) "https" else "http"
-    val params: Map[String, String] = Map(
-      "client_id" -> clientId,
-      "redirect_uri" -> "%s://%s/login/github/callback".format(protocol, request.host),
-      "scope" -> Set("user", "repo").mkString(","),
-      "state" -> scala.util.Random.alphanumeric.take(20).mkString
-    )
-    Redirect(GitHubOAuthProvider.requestAccessUri(params))
+    s"${protocol}://${request.host}/login/github/callback"
   }
-  def githubCallback = Action { request =>
-    val protocol = if (request.secure) "https" else "http"
+
+  def github = Action { implicit request =>
+    val oauth = GitHubOAuthProvider(clientId, clientSecret, callbackUrl)
+    Redirect(oauth.requestAccessUri("user", "repo"))
+  }
+  def githubCallback = Action.async { implicit request =>
+println("callback.query: " + request.queryString)
+    val oauth = GitHubOAuthProvider(clientId, clientSecret, callbackUrl)
     val code: String = request.getQueryString("code").getOrElse("")
-    val params: Map[String, String] = Map(
-      "client_id" -> clientId,
-      "client_secret" -> clientSecret,
-      "code" -> code,
-      "redirect_uri" -> "%s://%s/login/github/callback".format(protocol, request.host)
+    oauth.requestToken(code).map(token =>
+      Ok(views.html.index(token))
     )
-    val token = GitHubOAuthProvider.requestToken(params)
-    Ok(views.html.index(token))
-    //Redirect("%s://%s/login/github/confirm".format(protocol, request.host))
   }
 
   def githubConfirm = Action {

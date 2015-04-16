@@ -2,6 +2,13 @@
 
 @main("Welcome to Play") {
 
-    @play20.welcome(message)
+    <style>
+        .login-github {
+            width: 100px;
+            height: 60px;
+        }
+    </style>
+    <h1>@message</h1>
+    <a href="/login/github"><button class="login-github">GitHub Login</button></a>
 
 }

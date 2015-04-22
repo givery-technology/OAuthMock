@@ -1,4 +1,4 @@
-package services.github
+package services.facebook
 
 import scala.concurrent.Promise
 import scala.concurrent.Future
@@ -19,9 +19,10 @@ sealed abstract class OAuthProvider(clientId: String, clientSecret: String, redi
     val params = Map[String, String](
       "client_id" -> clientId,
       "redirect_uri" -> redirectUri,
+      "display" -> "page",
       "scope" -> scope.mkString(","),
-      "response_type" -> "code",
-      "state" -> UUID.randomUUID.toString
+      "state" -> UUID.randomUUID.toString,
+      "response_type" -> "code"
     )
     val query: String = params.map { case (k, v) => k +"="+ UTF8UrlEncoder.encode(v) }.mkString("&")
     accessRequestUri +"?"+ query
@@ -35,18 +36,19 @@ sealed abstract class OAuthProvider(clientId: String, clientSecret: String, redi
       "redirect_uri" -> redirectUri
     )
     val client: AsyncHttpClient = new AsyncHttpClient
-    val builder: RequestBuilder = new RequestBuilder("POST")
-      .setHeader("Content-Type", "application/x-www-form-urlencoded")
+    val builder: RequestBuilder = new RequestBuilder("GET")
       .setHeader("Accept", "application/json")
       .setFollowRedirects(true)
       .setUrl(tokenRequestUri)
-    params.foreach { case (k, v) => builder.addFormParam(k, v) }
+    params.foreach { case (k, v) => builder.addQueryParam(k, v) }
 
     val deferred = Promise[String]()
     client.prepareRequest(builder.build).execute(new AsyncCompletionHandler[Response]() {
       def onCompleted(res: Response) = {
+println(res.getResponseBody("utf-8"))
         val json = JsonMethods.parse(res.getResponseBody("utf-8"))
-        val token = (json \ "access_token").extract[String]
+println("token response: " + json)
+        val token = (json \ "access_token").extract[Option[String]].getOrElse(res.getResponseBody("utf-8"))
         deferred.success(token)
         res
       }
@@ -59,13 +61,11 @@ sealed abstract class OAuthProvider(clientId: String, clientSecret: String, redi
   }
 }
 
-class GitHubOAuthProvider(clientId: String, clientSecret: String, redirectUri: String) extends OAuthProvider(clientId, clientSecret, redirectUri) {
-  protected val accessRequestUri = "https://github.com/login/oauth/authorize"
-  protected val tokenRequestUri = "https://github.com/login/oauth/access_token"
+class FacebookOAuthProvider(clientId: String, clientSecret: String, redirectUri: String) extends OAuthProvider(clientId, clientSecret, redirectUri) {
+  protected val accessRequestUri = "https://www.facebook.com/dialog/oauth"
+  protected val tokenRequestUri = "https://graph.facebook.com/v2.3/oauth/access_token"
 }
 
-object GitHubOAuthProvider {
-
-  def apply(clientId: String, clientSecret: String, redirectUri: String) = new GitHubOAuthProvider(clientId, clientSecret, redirectUri)
-
+object FacebookOAuthProvider {
+  def apply(clientId: String, clientSecret: String, redirectUri: String) = new FacebookOAuthProvider(clientId, clientSecret, redirectUri)
 }

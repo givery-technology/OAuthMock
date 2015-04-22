@@ -3,6 +3,7 @@ package controllers
 import play.api._
 import play.api.mvc._
 import services.github.GitHubOAuthProvider
+import services.facebook.FacebookOAuthProvider
 import scala.concurrent.ExecutionContext.Implicits.global
 
 object Login extends Controller {
@@ -33,11 +34,16 @@ object Login extends Controller {
   }
 
   def facebook = Action { implicit request =>
-    Redirect("http://url.to.redirect")
+    val oauth = FacebookOAuthProvider(facebookClientId, facebookClientSecret, callbackUrl("facebook"))
+    Redirect(oauth.requestAccessUri("public_profile", "email"))
   }
 
   def facebookCallback = Action.async { implicit request =>
-    Ok(views.html.index("callback"))
+    val oauth = FacebookOAuthProvider(facebookClientId, facebookClientSecret, callbackUrl("facebook"))
+    val code: String = request.getQueryString("code").getOrElse("")
+    oauth.requestToken(code).map(token =>
+      Ok(views.html.index(token))
+    )
   }
 
 }

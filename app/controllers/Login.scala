@@ -19,7 +19,6 @@ object Login extends Controller {
     Redirect(oauth.requestAccessUri("user", "repo"))
   }
   def githubCallback = Action.async { implicit request =>
-println("callback.query: " + request.queryString)
     val oauth = GitHubOAuthProvider(clientId, clientSecret, callbackUrl)
     val code: String = request.getQueryString("code").getOrElse("")
     oauth.requestToken(code).map(token =>

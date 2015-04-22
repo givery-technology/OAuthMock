@@ -46,7 +46,6 @@ abstract class OAuthProvider(clientId: String, clientSecret: String, redirectUri
     client.prepareRequest(builder.build).execute(new AsyncCompletionHandler[Response]() {
       def onCompleted(res: Response) = {
         val json = JsonMethods.parse(res.getResponseBody("utf-8"))
-println("token response: " + json)
         val token = (json \ "access_token").extract[String]
         deferred.success(token)
         res

@@ -4,7 +4,7 @@ import java.util.UUID
 
 import com.ning.http.util.UTF8UrlEncoder
 
-abstract class AccessRequest (clientId: String, redirectUri: String) {
+trait AccessRequest {
 
   val method: String
   val requestUri: String
@@ -12,17 +12,16 @@ abstract class AccessRequest (clientId: String, redirectUri: String) {
 
   val state: String = UUID.randomUUID.toString
   val responseType: String = "code"
-  protected val baseParams: Map[String, String] = Map(
+
+  def params(clientId: String, redirectUri: String, moreParams: Map[String, String] = Map.empty): Map[String, String] = Map(
     "client_id" -> clientId,
     "redirect_uri" -> redirectUri,
     "state" -> state,
     "response_type" -> responseType
-  )
+  ) ++ optionalParams ++ moreParams
 
-  def params(moreParams: Map[String, String] = Map.empty): Map[String, String] = baseParams ++ optionalParams ++ moreParams
-
-  def uri(scope: Seq[String]): String = {
-    val p = params(Map("scope" -> scope.mkString(",")))
+  def uri(clientId: String, redirectUri: String, scope: Seq[String]): String = {
+    val p = params(clientId, redirectUri, Map("scope" -> scope.mkString(",")))
     val query = p map { case (k, v) => k +"="+ UTF8UrlEncoder.encode(v) } mkString("&")
     requestUri +"?"+ query
   }

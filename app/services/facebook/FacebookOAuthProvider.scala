@@ -3,7 +3,7 @@ package services.facebook
 import services.oauth2.{TokenRequest, AccessRequest, OAuth2Provider}
 
 
-class FacebookAccessRequest(clientId: String, redirectUri: String) extends AccessRequest(clientId, redirectUri) {
+class FacebookAccessRequest(clientId: String, redirectUri: String) extends AccessRequest {
   val method = "GET"
   val requestUri = "https://www.facebook.com/dialog/oauth"
   val optionalParams = Map(

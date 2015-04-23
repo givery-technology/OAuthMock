@@ -13,7 +13,7 @@ abstract class OAuth2Provider(clientId: String, clientSecret: String, redirectUr
   protected val tokenRequest: TokenRequest
 
   def requestAccessUri(scope: String*) = {
-    accessRequest.uri(scope)
+    accessRequest.uri(clientId, redirectUri, scope)
   }
 
   def requestToken(code: String): Future[String] = {

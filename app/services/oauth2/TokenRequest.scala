@@ -20,8 +20,6 @@ abstract class TokenRequest (clientId: String, clientSecret: String, redirectUri
     "response_type" -> "code"
   )
 
-  def params: Map[String, String] = baseParams ++ optionalParams
-
-  def params(moreParams: Map[String, String]): Map[String, String] = baseParams ++ optionalParams ++ moreParams
+  def params(moreParams: Map[String, String] = Map.empty): Map[String, String] = baseParams ++ optionalParams ++ moreParams
 
 }

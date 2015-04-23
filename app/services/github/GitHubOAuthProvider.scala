@@ -10,13 +10,12 @@ class GitHubAccessRequest(clientId: String, redirectUri: String) extends AccessR
 class GitHubTokenRequest(clientId: String, clientSecret: String, redirectUri: String) extends TokenRequest(clientId, clientSecret, redirectUri) {
   val method = "POST"
   val requestUri = "https://github.com/login/oauth/access_token"
-  val optionalParams = Map[String, String]()
+  val optionalParams: Map[String, String] = Map.empty
 }
 
 class GitHubOAuthProvider(clientId: String, clientSecret: String, redirectUri: String) extends OAuth2Provider(clientId, clientSecret, redirectUri) {
   val accessRequest = new GitHubAccessRequest(clientId, redirectUri)
   val tokenRequest = new GitHubTokenRequest(clientId, clientSecret, redirectUri)
-  val optionalParams = Map[String, String]()
 }
 
 object GitHubOAuthProvider {

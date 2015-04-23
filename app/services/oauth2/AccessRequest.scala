@@ -19,12 +19,10 @@ abstract class AccessRequest (clientId: String, redirectUri: String) {
     "response_type" -> "code"
   )
 
-  def params: Map[String, String] = baseParams ++ optionalParams
-
-  def params(moreParams: Map[String, String]): Map[String, String] = baseParams ++ optionalParams ++ moreParams
+  def params(moreParams: Map[String, String] = Map.empty): Map[String, String] = baseParams ++ optionalParams ++ moreParams
 
   def uri(scope: Seq[String]): String = {
-    val p = params ++ Map("scope" -> scope.mkString(","))
+    val p = params(Map("scope" -> scope.mkString(",")))
     val query = p map { case (k, v) => k +"="+ UTF8UrlEncoder.encode(v) } mkString("&")
     requestUri +"?"+ query
   }

@@ -20,7 +20,7 @@ abstract class OAuthProvider(clientId: String, clientSecret: String, redirectUri
       "client_id" -> clientId,
       "redirect_uri" -> redirectUri,
       "scope" -> scope.mkString(","),
-      "response_type" -> "token",
+      "response_type" -> "code",
       "state" -> UUID.randomUUID.toString
     )
     val query: String = params.map { case (k, v) => k +"="+ UTF8UrlEncoder.encode(v) }.mkString("&")

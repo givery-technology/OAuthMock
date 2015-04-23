@@ -45,10 +45,8 @@ sealed abstract class OAuthProvider(clientId: String, clientSecret: String, redi
     val deferred = Promise[String]()
     client.prepareRequest(builder.build).execute(new AsyncCompletionHandler[Response]() {
       def onCompleted(res: Response) = {
-println(res.getResponseBody("utf-8"))
         val json = JsonMethods.parse(res.getResponseBody("utf-8"))
-println("token response: " + json)
-        val token = (json \ "access_token").extract[Option[String]].getOrElse(res.getResponseBody("utf-8"))
+        val token = (json \ "access_token").extract[Option[String]].getOrElse("")
         deferred.success(token)
         res
       }

@@ -7,6 +7,8 @@ GET        /                             controllers.Application.index
 GET        /login/github                 controllers.Login.github
 GET        /login/github/callback        controllers.Login.githubCallback
 GET        /login/github/confirm         controllers.Login.githubConfirm
+GET        /login/facebook               controllers.Login.facebook
+GET        /login/facebook/callback      controllers.Login.facebookCallback
 
 
 # Map static resources from the /public folder to the /assets URL path

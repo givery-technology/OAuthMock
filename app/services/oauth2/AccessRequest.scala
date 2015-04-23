@@ -11,12 +11,12 @@ abstract class AccessRequest (clientId: String, redirectUri: String) {
   protected val optionalParams: Map[String, String]
 
   val state: String = UUID.randomUUID.toString
-  val reponseType: String = "code"
+  val responseType: String = "code"
   protected val baseParams: Map[String, String] = Map(
     "client_id" -> clientId,
     "redirect_uri" -> redirectUri,
     "state" -> state,
-    "response_type" -> "code"
+    "response_type" -> responseType
   )
 
   def params(moreParams: Map[String, String] = Map.empty): Map[String, String] = baseParams ++ optionalParams ++ moreParams

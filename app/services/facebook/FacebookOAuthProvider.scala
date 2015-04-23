@@ -11,7 +11,7 @@ class FacebookAccessRequest(clientId: String, redirectUri: String) extends Acces
     "scope" -> ""
   )
 }
-class FacebookTokenRequest(clientId: String, clientSecret: String, redirectUri: String) extends TokenRequest(clientId, clientSecret, redirectUri) {
+class FacebookTokenRequest(clientId: String, clientSecret: String, redirectUri: String) extends TokenRequest {
   val method = "GET"
   val requestUri = "https://graph.facebook.com/v2.3/oauth/access_token"
   val optionalParams: Map[String, String] = Map.empty

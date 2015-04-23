@@ -13,11 +13,11 @@ abstract class OAuth2Provider(clientId: String, clientSecret: String, redirectUr
   protected val tokenRequest: TokenRequest
 
   def requestAccessUri(scope: String*) = {
-    accessRequest.uri(clientId, redirectUri, scope)
+    accessRequest.uri(scope)
   }
 
   def requestToken(code: String): Future[String] = {
-    val params: Map[String, String] = tokenRequest.params(clientId, clientSecret, redirectUri, Map("code" -> code))
+    val params: Map[String, String] = tokenRequest.params(Map("code" -> code))
     val client: AsyncHttpClient = new AsyncHttpClient
     val builder: RequestBuilder = new RequestBuilder(tokenRequest.method)
       .setHeader("Accept", "application/json")

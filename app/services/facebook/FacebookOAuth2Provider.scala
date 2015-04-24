@@ -17,11 +17,11 @@ class FacebookTokenRequest(val clientId: String, val clientSecret: String, val r
   val optionalParams: Map[String, String] = Map.empty
 }
 
-class FacebookOAuthProvider(clientId: String, clientSecret: String, redirectUri: String) extends OAuth2Provider(clientId, clientSecret, redirectUri) {
+class FacebookOAuth2Provider(clientId: String, clientSecret: String, redirectUri: String) extends OAuth2Provider(clientId, clientSecret, redirectUri) {
   protected val accessRequest = new FacebookAccessRequest(clientId, redirectUri)
   protected val tokenRequest = new FacebookTokenRequest(clientId, clientSecret, redirectUri)
 }
 
-object FacebookOAuthProvider {
-  def apply(clientId: String, clientSecret: String, redirectUri: String) = new FacebookOAuthProvider(clientId, clientSecret, redirectUri)
+object FacebookOAuth2Provider {
+  def apply(clientId: String, clientSecret: String, redirectUri: String) = new FacebookOAuth2Provider(clientId, clientSecret, redirectUri)
 }

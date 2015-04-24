@@ -13,13 +13,13 @@ class GitHubTokenRequest(val clientId: String, val clientSecret: String, val red
   val optionalParams: Map[String, String] = Map.empty
 }
 
-class GitHubOAuthProvider(clientId: String, clientSecret: String, redirectUri: String) extends OAuth2Provider(clientId, clientSecret, redirectUri) {
+class GitHubOAuth2Provider(clientId: String, clientSecret: String, redirectUri: String) extends OAuth2Provider(clientId, clientSecret, redirectUri) {
   val accessRequest = new GitHubAccessRequest(clientId, redirectUri)
   val tokenRequest = new GitHubTokenRequest(clientId, clientSecret, redirectUri)
 }
 
-object GitHubOAuthProvider {
+object GitHubOAuth2Provider {
 
-  def apply(clientId: String, clientSecret: String, redirectUri: String) = new GitHubOAuthProvider(clientId, clientSecret, redirectUri)
+  def apply(clientId: String, clientSecret: String, redirectUri: String) = new GitHubOAuth2Provider(clientId, clientSecret, redirectUri)
 
 }

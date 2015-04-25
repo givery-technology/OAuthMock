@@ -2,8 +2,12 @@ package controllers
 
 import play.api._
 import play.api.mvc._
+
+import twitter4j.Twitter
+
 import services.github.GitHubOAuth2Provider
 import services.facebook.FacebookOAuth2Provider
+import services.twitter.TwitterManager
 import scala.concurrent.ExecutionContext.Implicits.global
 
 object Login extends Controller {
@@ -46,4 +50,14 @@ object Login extends Controller {
     )
   }
 
+  def twitter = Action { implicit request =>
+    Redirect(TwitterManager.authorizationUri)
+  }
+
+  def twitterCallback = Action { implicit request =>
+    val token: String = request.getQueryString("oauth_token").getOrElse("")
+    val verifier: String = request.getQueryString("oauth_verifier").getOrElse("")
+    val twitter: Twitter = TwitterManager.authorize(token, verifier)
+    Ok(views.html.index(twitter.toString))
+  }
 }
